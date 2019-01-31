@@ -14,15 +14,25 @@ class SearchController extends Controller
     public function search(Request $request)
     {
         $params= $request->all();
-        $name = $params['name'] ?? null;
-        $priceMin = $params['price_min'] ?? null;
-        $priceMax = $params['price_max'] ?? null;
-        $bedrooms = $params['bedrooms'] ?? null;
-        $bathrooms = $params['bathrooms'] ?? null;
-        $storeys = $params['storeys'] ?? null;
-        $garages = $params['garages'] ?? null;
+        if(count($params) == 0 ) return response()->json(['houses' => House::all()]);
+        $name = null;
+        $priceMin = null;
+        $priceMax = null;
+        $bedrooms = null;
+        $bathrooms = null;
+        $storeys = null;
+        $garages = null;
+
+        if(isset($params['name']) && $params['name'] != '') $name = $params['name'];
+        if(isset($params['priceMin'])&&  $params['priceMin'] != '') $priceMin = $params['priceMin'];
+        if(isset($params['priceMax']) && $params['priceMax'] != '') $priceMax = $params['priceMax'];
+        if(isset($params['bedrooms']) && $params['bedrooms'] != '') $bedrooms = +$params['bedrooms'];
+        if(isset($params['bathrooms']) && $params['bathrooms'] != '') $bathrooms  = +$params['bathrooms'];
+        if(isset($params['storeys']) && $params['storeys'] != '') $storeys = +$params['storeys'];
+        if(isset($params['garages']) && $params['garages'] != '') $garages = +$params['garages'];
+
         $houses = House::ofName($name)
-            ->ofPrice([$priceMin, $priceMax])
+            ->ofPrice(['min' => $priceMin, 'max' => $priceMax])
             ->ofBedrooms($bedrooms)
             ->ofBathrooms($bathrooms)
             ->ofStoreys($storeys)
